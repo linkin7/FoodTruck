@@ -1,10 +1,12 @@
 package main
 
 import (
-	"log"
+    "log"
     "fmt"
+    "net"
     "net/http"
     "net/rpc"
+    "time"
 
     "frontendserver/handler"
     "applicationserver/libs"
@@ -12,15 +14,18 @@ import (
 )
 
 func main() {
-	fmt.Println("Frontend server initializing ...")
+    fmt.Println("Frontend server initializing ...")
 
     go libs.New(mockuserdb.New(1000), nil).Start(1234)
+    time.Sleep(time.Minute)
 
 	fmt.Println("Frontend server connecting with application server...")
-    client, err := rpc.DialHTTP("tcp", "localhost:1234")
-	if err != nil {
-		log.Fatal("Dialing application server:", err)
-	}
+    conn, err := net.DialTimeout("tcp", "localhost:1234", 10 * time.Minute)
+      if err != nil {
+        log.Fatal("dialing:", err)
+      }
+
+    client := rpc.NewClient(conn)
 
     handler.InitHandlers(client)
 

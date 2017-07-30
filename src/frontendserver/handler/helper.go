@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"io/ioutil"
 	"net/http"
 )
 
@@ -10,12 +9,7 @@ type Page struct {
     Body  string
 }
 
-func loadPage(title string) (*Page, error) {
-    filename := "../src/frontendserver/html/" + title + ".html"
-    body, err := ioutil.ReadFile(filename)
-    if err != nil {
-        return nil, err
-    }
+func loadPage(title, body string, ) (*Page, error) {
     return &Page{Title: title, Body: string(body)}, nil
 }
 

@@ -5,7 +5,7 @@ import (
 	"log"
 	"strconv"
 	"net"
-	"net/http"
+	//"net/http"
 	"net/rpc"
 
 	"common"
@@ -26,7 +26,6 @@ func New(uDbM common.UserDbManager, client *rpc.Client) *Server {
 func (srv *Server) Start(port int) {
 	fmt.Println("Application server starting ...")
 	rpc.Register(srv)
-	rpc.HandleHTTP()
 	
 	fmt.Println("Application server opening tcp port ...")
 	l, err := net.Listen("tcp", ":" + strconv.Itoa(port))
@@ -34,7 +33,7 @@ func (srv *Server) Start(port int) {
 		log.Fatal("listen error:", err)
 	}
 	fmt.Println("Application server successfully started ...")
-	http.Serve(l, nil)
+	rpc.Accept(l)
 }
 
 func (srv *Server) Register(ud *common.UserData, ID *int64) error {

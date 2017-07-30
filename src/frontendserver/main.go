@@ -20,10 +20,12 @@ func main() {
 	fmt.Println("Frontend server initializing ...")
 
 	fmt.Println("Frontend server connecting with application server...")
-    client, err := rpc.DialHTTP("tcp", *appServerAddress)
-	if err != nil {
-		log.Fatal("Dialing application server:", err)
-	}
+    conn, err := net.DialTimeout("tcp", *appServerAddress, time.Minute)
+      if err != nil {
+        log.Fatal("dialing:", err)
+      }
+
+    client := rpc.NewClient(conn)
 
     handler.InitHandlers(client)
 

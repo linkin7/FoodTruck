@@ -1,3 +1,6 @@
+package htmltemplate
+
+var Login = `
 <h1>Log In</h1>
 
 <form action="/postlogin" method="POST">
@@ -5,3 +8,4 @@
 	Password: <input type="text" name="password"><br/>
   	<input type="submit" value="submit">
 </form>
+`

@@ -6,6 +6,7 @@ import (
 	"net/rpc"
 
 	"common"
+	"frontendserver/htmltemplate"
 )
 
 var appSrvClient *rpc.Client
@@ -30,7 +31,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, _ := loadPage("register")
+	p, _ := loadPage("register", htmltemplate.Register)
 	fmt.Fprintf(w, "%v", p.Body)
 }
 
@@ -67,7 +68,7 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, err := loadPage("home")
+	p, err := loadPage("home", htmltemplate.Home)
 	if err != nil {
 		fmt.Fprintf(w, "%v", err)
         return
@@ -92,7 +93,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, err := loadPage("index")
+	p, err := loadPage("index", htmltemplate.Index)
 	if err != nil {
 		fmt.Fprintf(w, "%v", err)
         return
@@ -106,7 +107,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, _ := loadPage("login")
+	p, _ := loadPage("login", htmltemplate.Login)
 	fmt.Fprintf(w, "%v", p.Body)
 }
 

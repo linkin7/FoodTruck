@@ -1,3 +1,6 @@
+package htmltemplate
+
+var Register = `
 <h1>Registration for Food Truck</h1>
 
 <form action="/postregister" method="POST">
@@ -11,3 +14,4 @@
 	</select>
   	<input type="submit" value="Submit">
 </form>
+`
