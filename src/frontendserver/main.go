@@ -1,35 +1,32 @@
 package main
 
 import (
-	"log"
+    "flag"
     "fmt"
+    "log"
     "net/http"
     "net/rpc"
+    "strconv"
+
+    "frontendserver/handler"
 )
 
-var appSrvClient *rpc.Client
-
+var (
+    appServerAddress = flag.String("application_server_address", "localhost:1234", "Network address and port of application server")
+    port = flag.Int("port", 8080, "Port number to start server")
+)
 
 func main() {
 	fmt.Println("Frontend server initializing ...")
 
 	fmt.Println("Frontend server connecting with application server...")
-    var err error
-    appSrvClient, err = rpc.DialHTTP("tcp", "localhost:1234")
+    client, err := rpc.DialHTTP("tcp", *appServerAddress)
 	if err != nil {
 		log.Fatal("Dialing application server:", err)
 	}
 
-    http.HandleFunc("/", handler)
-    http.HandleFunc("/index", handler)
-    http.HandleFunc("/register", registerHandler)
-    http.HandleFunc("/postregister", postRegisterHandler)
-    http.HandleFunc("/login", loginHandler)
-    http.HandleFunc("/postlogin", postLoginHandler)
-    http.HandleFunc("/home", homePageHandler)
-    http.HandleFunc("/update", updateHandler)
-    http.HandleFunc("/logout", logoutHandler)
+    handler.InitHandlers(client)
 
     fmt.Println("Frontend server successfully started ...")
-    http.ListenAndServe(":8080", nil)
+    http.ListenAndServe(strconv.Itoa(*port), nil)
 }
