@@ -57,6 +57,9 @@ func (c *Container) Serialize() string {
 	return ""
 }
 
-func (c *Container) Deserialize(s string) common.DataContainer {
-	return c
+func (c *Container) Deserialize(s string) {
+}
+
+func (c *Container) Generate(locs []*common.Location) {
+	c.locs = locs
 }

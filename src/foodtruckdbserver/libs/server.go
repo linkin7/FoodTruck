@@ -1,51 +1,60 @@
 package libs
 
 import (
-	//"errors"
+	"fmt"
+	"log"
+	"strconv"
+	"net"
 	"net/rpc"
 
 	"common"
 )
 
-type Server struct {
-	uDbMgr common.UserDbManager
-    ftDbClient *rpc.Client
+type FTServer struct {
+	ftDbMgr common.FoodTruckDbManager
+    container common.DataContainer
+    cur_cluster int
 }
 
-func New(uDbM common.UserDbManager, client *rpc.Client) *Server {
-	return &Server{
-		uDbMgr: uDbM,
-		ftDbClient: client,
+func New(mgr common.FoodTruckDbManager, c common.DataContainer) *FTServer {
+	return &FTServer{
+		ftDbMgr: mgr,
+		container: c,
 	}
 }
 
-func (srv *Server) Register(ud *common.UserData, ID *int64) error {
-	*ID = srv.uDbMgr.AddUser(ud.Name, ud.Pw, ud.Cuisine)
-	return nil
-}
-
-func (srv *Server) Login(ud *common.UserData, ok *bool) error {
-	*ok = srv.uDbMgr.ValidateUser(ud.Name, ud.Pw)
-	return nil
-}
-
-func (srv *Server) UserID(ud *common.UserData, ID *int64) error {
-	*ID = srv.uDbMgr.UserID(ud.Name)
-	return nil
-}
-
-func (srv *Server) UpdateFoodTruck(td *common.TruckData, ok *bool) error {
-	err := srv.ftDbClient.Call("FTServer.UpdateFoodTruck", td, ok)
+func (srv *FTServer) Start(port int) {
+	fmt.Println("Food Truck Database server starting ...")
+	rpc.Register(srv)
+	
+	fmt.Println("Food Truck Database server opening tcp port ...")
+	l, err := net.Listen("tcp", ":" + strconv.Itoa(port))
 	if err != nil {
+		log.Fatal("listen error:", err)
+	}
+	fmt.Println("Food Truck Database server successfully started ...")
+	rpc.Accept(l)
+}
+
+func (srv *FTServer) updateContainer() {
+	locs := srv.ftDbMgr.ClusterData(srv.cur_cluster)
+	srv.container.Generate(locs)
+}
+
+func (srv *FTServer) UpdateFoodTruck(td *common.TruckData, ok *bool) error {
+	if err := srv.CloseFoodTruck(td, ok); err != nil {
 		return err
 	}
+	*ok = srv.ftDbMgr.UpdateFoodTruck(td.UID, td.Lat, td.Lon)
 	return nil
 }
 
-func (srv *Server) CloseFoodTruck(td *common.TruckData, ok *bool) error {
-	err := srv.ftDbClient.Call("FTServer.CloseFoodTruck", td, ok)
-	if err != nil {
-		return err
-	}
+func (srv *FTServer) CloseFoodTruck(td *common.TruckData, ok *bool) error {
+	*ok = srv.ftDbMgr.CloseFoodTruck(td.UID)
+	return nil
+}
+
+func (srv *FTServer) FindNearestFoodTruck(loc *common.Location, list *[]*common.Location) error {
+	*list = srv.container.KNearestNeighbour(loc, loc.Payload)
 	return nil
 }

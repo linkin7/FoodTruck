@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"strconv"
 	"net/http"
 	"net/rpc"
 
@@ -22,11 +23,12 @@ func InitHandlers(client *rpc.Client) {
     http.HandleFunc("/postlogin", postLoginHandler)
     http.HandleFunc("/home", homePageHandler)
     http.HandleFunc("/update", updateHandler)
+    http.HandleFunc("/updateconfirm", updateConfirmHandler)
     http.HandleFunc("/logout", logoutHandler)
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
-	if len(isLoggedIn(r)) > 0 {
+	if isLoggedIn(r) {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 		return
 	}
@@ -35,9 +37,8 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%v", p.Body)
 }
 
-
 func postRegisterHandler(w http.ResponseWriter, r *http.Request) {
-	if len(isLoggedIn(r)) > 0 {
+	if isLoggedIn(r) {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 		return
 	}
@@ -48,7 +49,7 @@ func postRegisterHandler(w http.ResponseWriter, r *http.Request) {
 		Cuisine: r.FormValue("cuisine"),
 	}
 	var reply int
-	err := appSrvClient.Call("Server.Register", ud, &reply)
+	err := appSrvClient.Call("AppServer.Register", ud, &reply)
 	if err != nil {
 		fmt.Fprintf(w, "Registration error: %v", err)
 		return
@@ -63,7 +64,7 @@ func postRegisterHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
-	if len(isLoggedIn(r)) == 0 {
+	if !isLoggedIn(r) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -77,18 +78,52 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateHandler(w http.ResponseWriter, r *http.Request) {
-	if len(isLoggedIn(r)) == 0 {
+	if !isLoggedIn(r) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
-	r.ParseForm()
-	fmt.Println("%v", r.Form)
-	// need tocll rpc
-	http.Redirect(w, r, "/home", http.StatusSeeOther)
+
+	method := ""
+	// TODO: check error after parsing float.
+	lat, _ := strconv.ParseFloat(r.FormValue("latitude"), 64)
+	lon, _ := strconv.ParseFloat(r.FormValue("longitude"), 64)
+	uID, err := currentUserID(r)
+	if err != nil {
+		fmt.Fprintf(w, "FoodTruck update error: %v", err)
+		return
+	}
+	td := &common.TruckData{uID, lat, lon}
+
+	if len(r.FormValue("start")) > 0 {
+		method = "AppServer.UpdateFoodTruck"
+	} else {
+		method = "AppServer.CloseFoodTruck"
+	}
+
+	var reply bool
+	err = appSrvClient.Call(method, td, &reply)
+	if err != nil {
+		fmt.Fprintf(w, "FoodTruck update error: %v", err)
+		return
+	}
+	if reply == false {
+		fmt.Fprintln(w, "FoodTruck update failed! Try again!")
+		return
+	}
+
+	http.Redirect(w, r, "/updateconfirm", http.StatusSeeOther)
+}
+
+func updateConfirmHandler(w http.ResponseWriter, r *http.Request) {
+	if !isLoggedIn(r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+	fmt.Fprintln(w, "<b>Food Truck status successfully updated</b>")
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	if len(isLoggedIn(r)) > 0 {
+	if isLoggedIn(r) {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 		return
 	}
@@ -102,7 +137,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	if len(isLoggedIn(r)) > 0 {
+	if isLoggedIn(r) {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 		return
 	}
@@ -113,7 +148,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func postLoginHandler(w http.ResponseWriter, r *http.Request) {
-	if len(isLoggedIn(r)) > 0 {
+	if isLoggedIn(r) {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 		return
 	}
@@ -123,7 +158,7 @@ func postLoginHandler(w http.ResponseWriter, r *http.Request) {
 		Pw: r.FormValue("password"),
 	}
 	var reply bool
-	err := appSrvClient.Call("Server.Login", ud, &reply)
+	err := appSrvClient.Call("AppServer.Login", ud, &reply)
 	if err != nil {
 		fmt.Fprintf(w, "Login error: %v", err)
 		return

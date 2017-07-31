@@ -55,4 +55,25 @@ func (c *Collections) FindFoodTruck(oID int64) *common.Location {
 	return nil
 }
 
+func (c *Collections) ClusterData(cl int) []*common.Location {
+	ret := []*common.Location{}
+	for _, ft := range c.fts {
+		if (ft.cluster == cl) {
+			ret = append(ret, &common.Location{
+				ID: ft.oID,
+				Lat: ft.lat,
+				Lon: ft.lon, 
+				})
+		}
+	}
+	return ret
+}
 
+func (c *Collections) FoodTruckCluster(oID int64) int {
+	for _, ft := range c.fts {
+		if (ft.oID == oID) {
+			return ft.cluster
+		}
+	}
+	return -1
+}
