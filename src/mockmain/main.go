@@ -16,6 +16,11 @@ import (
     dslibs "foodtruckdbserver/libs"
 )
 
+var (
+    SleepDuration = time.Second
+    DialTimeoutDuration = 10 * time.Minute
+)
+
 func main() {
     fmt.Println("Frontend server initializing ...")
 
@@ -23,20 +28,20 @@ func main() {
     ftdb := mockfoodtruckdb.New(1000)
     container := mockdatacontainer.New(1000)
 
-    go dslibs.New(ftdb, container).Start(7777)
-    time.Sleep(time.Minute)
+    go dslibs.New(ftdb, userdb, container, time.Second).Start(7777)
+    time.Sleep(SleepDuration)
 
     fmt.Println("Connecting with Food truck database server...")
-    conn, err := net.DialTimeout("tcp", "localhost:7777", 10 * time.Minute)
+    conn, err := net.DialTimeout("tcp", "localhost:7777", DialTimeoutDuration)
     if err != nil {
         log.Fatal("dialing:", err)
     }    
 
     go aslibs.New(userdb, rpc.NewClient(conn)).Start(1234)
-    time.Sleep(time.Minute)
+    time.Sleep(SleepDuration)
 
 	fmt.Println("Connecting with application server...")
-    conn, err = net.DialTimeout("tcp", "localhost:1234", 10 * time.Minute)
+    conn, err = net.DialTimeout("tcp", "localhost:1234", DialTimeoutDuration)
     if err != nil {
         log.Fatal("dialing:", err)
     }

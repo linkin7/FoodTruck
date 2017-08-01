@@ -25,6 +25,7 @@ func InitHandlers(client *rpc.Client) {
     http.HandleFunc("/update", updateHandler)
     http.HandleFunc("/updateconfirm", updateConfirmHandler)
     http.HandleFunc("/logout", logoutHandler)
+    http.HandleFunc("/findnearest", findNearestHandler)
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
@@ -48,6 +49,7 @@ func postRegisterHandler(w http.ResponseWriter, r *http.Request) {
 		Pw: r.FormValue("password"),
 		Cuisine: r.FormValue("cuisine"),
 	}
+
 	var reply int
 	err := appSrvClient.Call("AppServer.Register", ud, &reply)
 	if err != nil {
@@ -92,7 +94,7 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "FoodTruck update error: %v", err)
 		return
 	}
-	td := &common.TruckData{uID, lat, lon}
+	td := &common.TruckData{uID, lat, lon, ""}
 
 	if len(r.FormValue("start")) > 0 {
 		method = "AppServer.UpdateFoodTruck"
@@ -175,4 +177,37 @@ func postLoginHandler(w http.ResponseWriter, r *http.Request) {
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	makeLoggedOut(w, r)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func findNearestHandler(w http.ResponseWriter, r *http.Request) {
+	if isLoggedIn(r) {
+		http.Redirect(w, r, "/home", http.StatusSeeOther)
+		return
+	}
+
+	// TODO: check error after parsing float.
+	lat, _ := strconv.ParseFloat(r.FormValue("latitude"), 64)
+	lon, _ := strconv.ParseFloat(r.FormValue("longitude"), 64)
+
+	reply := &[]*common.TruckData{}
+	err := appSrvClient.Call("AppServer.FindNearest", &common.Location{
+		Lat: lat,
+		Lon: lon,
+		Payload: 3,
+		}, &reply)
+	if err != nil {
+		fmt.Fprintf(w, "Finding Nearest Truck error: %v", err)
+		return
+	}
+
+	if len(*reply) == 0 {
+		fmt.Fprintln(w, "No available truck around")
+		return
+	}
+
+	fmt.Fprintln(w, "<table border='1'><tr><th>Cuisine Type</th><th>Latitude</th><th>Longitude</th></tr>")
+	for _, td := range *reply {
+		fmt.Fprintf(w, "<tr><td>%v</td><td>%v</td><td>%v</td></tr>", td.Cuisine, td.Lat, td.Lon)
+	}
+	fmt.Fprintln(w, "</table>")
 }

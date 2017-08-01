@@ -9,8 +9,8 @@ import (
 
 func TestUpdateFoodTruck(t *testing.T) {
 	db := New(10)
-	db.UpdateFoodTruck(1, 1.5, 2.5)
-	db.UpdateFoodTruck(2, 3.5, 4.5)
+	db.UpdateFoodTruck(1, 1.5, 2.5, 0)
+	db.UpdateFoodTruck(2, 3.5, 4.5, 0)
 
 	want := &common.Location{
 		ID: 1,

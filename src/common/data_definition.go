@@ -11,6 +11,7 @@ type TruckData struct {
 	UID int64
 	Lat float64
 	Lon float64
+	Cuisine string
 }
 
 type Location struct {

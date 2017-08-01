@@ -1,7 +1,7 @@
 package common
 
 type FoodTruckDbManager interface {
-	UpdateFoodTruck(oID int64, lat float64, lon float64) bool
+	UpdateFoodTruck(oID int64, lat float64, lon float64, cl int) bool
 	CloseFoodTruck(oID int64) bool
 	FindFoodTruck(oID int64) *Location
 	FoodTruckCluster(oID int64) int
@@ -12,6 +12,7 @@ type UserDbManager interface {
 	AddUser(name, pw, cuisine string) int64
 	ValidateUser(name, pw string) bool
 	UserID(name string) int64
+	CuisineType(uID int64) string
 }
 
 type DataContainer interface {

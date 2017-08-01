@@ -1,5 +1,7 @@
 package mockuserdb
 
+import "sync"
+
 type user struct {
 	id int64
 	name string
@@ -10,6 +12,9 @@ type user struct {
 type Collections struct {
 	capacity int64
 	users []user
+
+	mu sync.Mutex
+	id int64
 }
 
 func New(cap int64) *Collections {
@@ -18,13 +23,23 @@ func New(cap int64) *Collections {
 	}
 }
 
+func (c *Collections) generateID() int64 {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.id++
+	return c.id
+}
+
 
 func (c *Collections) AddUser(name, pw, cuisine string) int64 {
 	if c.UserID(name) != -1 {
 		return -1
 	}
+	if len(cuisine) == 0 {
+		cuisine = "None"
+	}
 	c.users = append(c.users, user{
-		id: 1,
+		id: c.generateID(),
 		name: name,
 		password: pw,
 		cuisine: cuisine,
@@ -48,4 +63,13 @@ func (c *Collections) UserID(name string) int64 {
 		}
 	}
 	return -1
+}
+
+func (c *Collections) CuisineType(id int64) string {
+	for _, u := range c.users {
+		if u.id == id {
+			return u.cuisine
+		}
+	}
+	return "None"
 }

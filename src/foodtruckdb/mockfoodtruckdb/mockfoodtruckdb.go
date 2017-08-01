@@ -21,13 +21,13 @@ func New(cap int64) *Collections {
 }
 
 
-func (c *Collections) UpdateFoodTruck(oID int64, lat float64, lon float64) bool {
+func (c *Collections) UpdateFoodTruck(oID int64, lat float64, lon float64, cl int) bool {
 	c.CloseFoodTruck(oID)
 	c.fts = append(c.fts, foodTruck{
 		oID: oID,
 		lat: lat,
 		lon: lon,
-		cluster: 0,
+		cluster: cl,
 		})
 	return true
 }

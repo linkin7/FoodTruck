@@ -6,7 +6,7 @@ var Register = `
 <form action="/postregister" method="POST">
 	Name: <input type="text" name="name"><br/>
 	Password: <input type="text" name="password"><br/>
-	<select name="cuisines">
+	<select name="cuisine">
     	<option value="" disabled="disabled" selected="selected">Please select a cuisine</option>
   		<option value="italian">Italian</option>
   		<option value="french">French</option>

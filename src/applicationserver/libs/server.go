@@ -65,3 +65,12 @@ func (srv *AppServer) CloseFoodTruck(td *common.TruckData, ok *bool) error {
 	}
 	return nil
 }
+
+func (srv *AppServer) FindNearest(td *common.Location, res *[]*common.TruckData) error {
+	err := srv.ftDbClient.Call("FTServer.FindNearestFoodTruck", td, res)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
