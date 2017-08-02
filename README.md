@@ -19,7 +19,10 @@ All the client components communicate with server through RPC. I chose this meth
 
 * **[Front-End Server](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver)**: This is the topmost component of the application. This component displays information related to user registration , finding nearest food truck etc. It communicates with application server through RPC by which it puts out the results to the browser/client tier. In simple terms, it is a layer which users can access directly (such as a web page, mobile app). During intialization this server registers all the url path with the corresponding handler function through [handler package](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver/handler).
 
+
 * **[Application Server](https://github.com/linkin7/FoodTruck/tree/master/src/applicationserver)**: This is the middle layer of the architecture. This componenet interacts with component related with user data and food truck data, and exposes processed request through RPC interface. Apart from acessing data from internel components, ideally this components doesn't do any processing functionaity.
+
+![alt text](https://github.com/linkin7/FoodTruck/blob/master/diagram.jpg)
 
 * **[User Data Manager](https://github.com/linkin7/FoodTruck/tree/master/src/userdb)**: This components implements [UserDbManager](https://github.com/linkin7/FoodTruck/blame/master/src/common/data_manager_interface.go#L17) interface and wraps any cloud data storage for registered [user data](https://github.com/linkin7/FoodTruck/blob/master/src/sql_command.txt). Because of consistency, ideally it should use any RDMS like MySQL. Apart from MySQL implementation current directory contains another in memory based mock implementation for integration testing.
 
