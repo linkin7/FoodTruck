@@ -1,3 +1,7 @@
+// package mockdatacontaner implements a in-memory mock version of DataContainer
+// interface (common/data_manager_interface.go). It stores all the data in a slice,
+// and during query it does linear search.
+
 package mockdatacontainer
 
 import "common"
@@ -47,16 +51,19 @@ func (c *Container) KNearestNeighbour(loc *common.Location, k int) []*common.Loc
 	return neighbours
 }
 
+// Distance implements a method to find euclidean distance between two location.
 func (c *Container) Distance(loc1 *common.Location, loc2 *common.Location) float64 {
 	diff_lat := loc1.Lat - loc2.Lat
 	diff_lon := loc1.Lon - loc2.Lon
 	return diff_lat * diff_lat + diff_lon * diff_lon
 }
 
+// TODO: implement it
 func (c *Container) Serialize() string {
 	return ""
 }
 
+// TODO: implement it
 func (c *Container) Deserialize(s string) {
 }
 

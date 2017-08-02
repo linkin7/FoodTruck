@@ -1,3 +1,6 @@
+// package mockmain/main starts a frontend server, application server and 
+// FoodTruck database server in a single machine using mock object.
+
 package main
 
 import (
@@ -17,7 +20,7 @@ import (
 )
 
 var (
-    SleepDuration = time.Second
+    SleepDuration = time.Minute
     DialTimeoutDuration = 10 * time.Minute
 )
 

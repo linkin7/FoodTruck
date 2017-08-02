@@ -1,3 +1,7 @@
+// package mockuserdb implements a in-memory mock version of UserDbManager
+// interface (common/data_manager_interface.go). During inserting a new
+// user data it creates a unique user id.
+
 package mockuserdb
 
 import "sync"
@@ -35,6 +39,7 @@ func (c *Collections) AddUser(name, pw, cuisine string) int64 {
 	if c.UserID(name) != -1 {
 		return -1
 	}
+	// If no cuisine is set by a user, then by default it should be None.
 	if len(cuisine) == 0 {
 		cuisine = "None"
 	}

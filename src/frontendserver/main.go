@@ -1,12 +1,15 @@
+// package frontendserver/main starts a frontend server.
 package main
 
 import (
     "flag"
     "fmt"
     "log"
+    "net"
     "net/http"
     "net/rpc"
     "strconv"
+    "time"
 
     "frontendserver/handler"
 )
@@ -20,7 +23,7 @@ func main() {
 	fmt.Println("Frontend server initializing ...")
 
 	fmt.Println("Frontend server connecting with application server...")
-    conn, err := net.DialTimeout("tcp", *appServerAddress, time.Minute)
+    conn, err := net.DialTimeout("tcp", *appServerAddress, 15 * time.Minute)
       if err != nil {
         log.Fatal("dialing:", err)
       }

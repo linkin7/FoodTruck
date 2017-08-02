@@ -1,3 +1,7 @@
+// package mockuserdb implements a in-memory mock version of FoodTruckDbManager
+// interface (common/data_manager_interface.go). Currently it pushes all the data in
+// default 0 cluster.
+
 package mockfoodtruckdb
 
 import "common"

@@ -1,3 +1,4 @@
+// Integration test of FTServer using mock DataContainer and FoodTruckDbManager.
 package libs
 
 import (
@@ -39,8 +40,12 @@ func TestFindNearestFoodTruck(t *testing.T) {
 		}, &b)
 	time.Sleep(time.Second)
 
-	// 2 nearest FoodTrcuk of location co-ordinate (0, 0)
-	loc := &common.Location{0, 0, 0, 2}
+	// 2 nearest FoodTruclk of location co-ordinate (0, 0)
+	loc = &common.Location{
+		Lat: 0, 
+		Lon: 0, 
+		Payload: 2,
+	}
 	got := &[]*common.TruckData{}
 
     srv.FindNearestFoodTruck(loc, got)

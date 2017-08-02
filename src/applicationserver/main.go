@@ -1,3 +1,5 @@
+// Package applicationserver/main starts an application server.
+
 package main 
 
 import (
@@ -24,5 +26,6 @@ func main() {
 		log.Fatal("Dialing database server:", err)
 	}
 
-	go libs.New(mockuserdb.New(1000), client).Start(*port)
+	// TODO: change the mockuserdb by actual database class.
+	libs.New(mockuserdb.New(1000), client).Start(*port)
 }

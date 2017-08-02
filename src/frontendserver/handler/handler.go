@@ -1,3 +1,6 @@
+// Package handler implements all the URL handle processor for the frontend server.
+// Before using this package InitHandlers() function should be called with a client
+// of Application server.
 package handler 
 
 import (
@@ -10,8 +13,10 @@ import (
 	"frontendserver/htmltemplate"
 )
 
+// appSrvClient holds the TCP connection with Appllication server.
 var appSrvClient *rpc.Client
 
+// InitHandles registers all the handler function with corresponding url path.
 func InitHandlers(client *rpc.Client) {
 	appSrvClient = client
 
