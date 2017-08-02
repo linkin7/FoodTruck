@@ -1,7 +1,7 @@
 # The Food Truck Finder Service
 A simple location based service that provides a user information about nearest available Food Trucks. This service also allows a registered user to open a Food Truck service. It's hosted in Google App engine with a MySQL instance.
 
-[link](https://foodtruckapplication-175305.appspot.com)
+[Service link](https://foodtruckapplication-175305.appspot.com)
 
 ## Usecase
 
@@ -31,8 +31,16 @@ All the client components communicate with server through RPC. I chose this meth
 
 * **Cluster Manager**: This a Map Reduce authoring batch job. By design, this job imports all the food truck data from data store, finds some uniformly distributed cluster and assigns latest cluster number to all the food trucksbaed on location. Because of the periodic mutation of food truck, it's better to store food truck data in a version controlled NoSQL database like BigTable. By modifying K means algorithm, it should be feasible to find uniformly distributed cluster centroids. Implementation should be done with Google flume like project Apache crunch. But having lack of knowledge with Apache crunch interface, currently this pipeline isn't implemented. 
 
-* **Food Truck Data Server**: This component processes any request for food truck data. It holds a reference of user data manager, food truck data manager and data container. By design, it should store food truck data of few clusters data in data container and serves the query using data container. It's a read heavy component and processes most of the data, so it needs to be scaled widely. This component can also exploit geo location of datacentre. Because most of the request are served from nearest datacentre, each invidual server will only hold the data of nearest clusters and can store in the in-memory data container. For simplicity current implementation assigns all the food truck data to cluster 0.
+* **[Food Truck Data Server](https://github.com/linkin7/FoodTruck/tree/master/src/foodtruckdbserver)**: This component processes any request for food truck data. It holds a reference of user data manager, food truck data manager and data container. By design, it should store food truck data of few clusters data in data container and serves the query using data container. It's a read heavy component and processes most of the data, so it needs to be scaled widely. This component can also exploit geo location of datacentre. Because most of the request are served from nearest datacentre, each invidual server will only hold the data of nearest clusters and can store in the in-memory data container. For simplicity current implementation assigns all the food truck data to cluster 0.
 
+## Deploypment
+After creating a project in GCP, Run `gcloud app deploy` from [mockmain](https://github.com/linkin7/FoodTruck/tree/master/src/mockmain) directory. Currently it creates all the server instance in a single machine in different port. For datastore, create a 2nd gen mysql instance within same project in GCP and create table with [this schema](https://github.com/linkin7/FoodTruck/blob/master/sql.txt).
 
+## Limitations
+
+- Very basic user interface. Please feel free to use back button for navigation.
+- No input validation.
+- Basic RPC communcation. There's not any excryption during server/client communication.
+- Not enough fall back in case of any failure during database read/query.
 
 
