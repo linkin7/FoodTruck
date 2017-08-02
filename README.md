@@ -3,7 +3,12 @@ A simple location based service that provides a user information about nearest a
 
 [Service link](https://foodtruckapplication-175305.appspot.com)
 
-## Usecase
+## Functional Requirement
+
+- Logged out user can find nearest food truck, given users current geo location.
+- Logged in user can start a food truck user by submitting current location.
+- Logged in user's can't try nearest foodtruck feature, For that they need to log out. (limitation)
+- A registered user can start only on food truck service.
 
 ## Design Overview
 
@@ -17,7 +22,7 @@ The project focuses on the back-end, more specifically canonical structure of th
 
 All the client components communicate with server through RPC. I chose this method over REST, SOAP, because previously I mostly worked on RPC method. Also using proper RPC based framework like stubby (gRPC), it's possible to make client implementation less dependent on server implementation. 
 
-## High Level Description 
+## High Level Component Design
 
 * **[Front-End Server](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver)**: This is the topmost component of the application. This component displays information related to user registration , finding nearest food truck etc. It communicates with application server through RPC by which it puts out the results to the browser/client tier. In simple terms, it is a layer which users can access directly (such as a web page, mobile app). During intialization this server registers all the url path with the corresponding handler function through [handler package](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver/handler).
 
