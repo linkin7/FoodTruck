@@ -40,7 +40,8 @@ After creating a project in GCP, Run `gcloud app deploy` from [mockmain](https:/
 
 - Very basic user interface. Please feel free to use back button for navigation.
 - No input validation.
-- Basic RPC communcation. There's not any excryption during server/client communication.
+- Basic RPC communcation. There's not any encryption during server/client communication.
 - Not enough fall back in case of any failure during database read/query.
-
+- Any updates regarding Food Truck will be reflected after [update interval time](https://github.com/linkin7/FoodTruck/blob/master/src/foodtruckdbserver/libs/server.go#L45), because food truck data server fetches fresh data after certain interval and store them in data container for future queries.
+- Distance between two location is measured by crow fly distance. In real world, it should take account of transportation system.
 
