@@ -10,13 +10,16 @@ import (
     "net/http"
     "net/rpc"
     "time"
+    "os"
 
     "frontendserver/handler"
-    "userdb/mockuserdb"
+    "userdb/mysql"
     "foodtruckdb/mockfoodtruckdb"
     "datacontainer/mockdatacontainer"
     aslibs "applicationserver/libs"
     dslibs "foodtruckdbserver/libs"
+
+    _ "github.com/go-sql-driver/mysql"
 )
 
 var (
@@ -24,10 +27,22 @@ var (
     DialTimeoutDuration = 10 * time.Minute
 )
 
+func mustGetenv(k string) string {
+    val := os.Getenv(k)
+    if len(val) == 0 {
+        log.Panicf("%s environment variable not set.", k)
+    }
+    return val
+}
+
 func main() {
     fmt.Println("Frontend server initializing ...")
 
-    userdb := mockuserdb.New(1000)
+    connectionName := mustGetenv("CLOUDSQL_CONNECTION_NAME")
+    dbuser := mustGetenv("CLOUDSQL_USER")
+    password := mustGetenv("CLOUDSQL_PASSWORD")
+
+    userdb := mysql.New(fmt.Sprintf("%s:%s@cloudsql(%s)/", dbuser, password, connectionName))
     ftdb := mockfoodtruckdb.New(1000)
     container := mockdatacontainer.New(1000)
 
