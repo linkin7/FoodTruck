@@ -16,9 +16,9 @@ var (
 )
 
 func main() {
-	userdb := mockuserdb.New(1000)
-    ftdb := mockfoodtruckdb.New(1000)
-    container := mockdatacontainer.New(1000)
+	userdb := mockuserdb.New()
+    ftdb := mockfoodtruckdb.New()
+    container := mockdatacontainer.New()
 
     libs.New(ftdb, userdb, container, *updInterval).Start(*port)
 }

@@ -15,7 +15,7 @@ type Users struct {
 }
 
 func New(dataSourceName string) *Users {
-        log.Printf("Opening mysql database: %s\n", dataSourceName)
+        log.Printf("Opening mysql user database: %s\n", dataSourceName)
         db, err := sql.Open("mysql", dataSourceName)
         if err != nil {
                 log.Fatalf("Could not open db: %v", err)
@@ -80,7 +80,7 @@ func (us *Users) UserID(name string) int64 {
 }
 
 func (us *Users) CuisineType(id int64) string {
-        q := fmt.Sprintf("SELECT cuisine FROM users WHERE is = %v", id)
+        q := fmt.Sprintf("SELECT cuisine FROM users WHERE id = %v", id)
         rows, err := us.db.Query(q)
         if err != nil {
                 log.Printf("%v", err)

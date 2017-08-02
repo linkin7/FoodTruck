@@ -7,14 +7,11 @@ package mockdatacontainer
 import "common"
 
 type Container struct {
-	capacity int64
 	locs []*common.Location
 }
 
-func New(cap int64) *Container {
-	return &Container{
-		capacity: cap,
-	}
+func New() *Container {
+	return &Container{}
 }
 
 func (c *Container) Insert(loc *common.Location) {

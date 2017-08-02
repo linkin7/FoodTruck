@@ -14,14 +14,11 @@ type foodTruck struct {
 }
 
 type Collections struct {
-	capacity int64
 	fts []foodTruck
 }
 
-func New(cap int64) *Collections {
-	return &Collections{
-		capacity: cap,
-	}
+func New() *Collections {
+	return &Collections{}
 }
 
 

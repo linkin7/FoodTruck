@@ -13,9 +13,9 @@ import (
     "os"
 
     "frontendserver/handler"
-    "userdb/mysql"
-    "foodtruckdb/mockfoodtruckdb"
     "datacontainer/mockdatacontainer"
+    udb "userdb/mysql"
+    ftdb "foodtruckdb/mysql"
     aslibs "applicationserver/libs"
     dslibs "foodtruckdbserver/libs"
 
@@ -41,12 +41,14 @@ func main() {
     connectionName := mustGetenv("CLOUDSQL_CONNECTION_NAME")
     dbuser := mustGetenv("CLOUDSQL_USER")
     password := mustGetenv("CLOUDSQL_PASSWORD")
+    dbInstanceAddress := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/datastore", dbuser, password, connectionName)
 
-    userdb := mysql.New(fmt.Sprintf("%s:%s@cloudsql(%s)/", dbuser, password, connectionName))
-    ftdb := mockfoodtruckdb.New(1000)
-    container := mockdatacontainer.New(1000)
+    //userdb := mysql.New(fmt.Sprintf("%s:%s@cloudsql(%s)/", dbuser, password, connectionName))
+    userDB := udb.New(dbInstanceAddress)
+    ftDB := ftdb.New(dbInstanceAddress)
+    container := mockdatacontainer.New()
 
-    go dslibs.New(ftdb, userdb, container, time.Second).Start(7777)
+    go dslibs.New(ftDB, userDB, container, time.Second).Start(7777)
     time.Sleep(SleepDuration)
 
     fmt.Println("Connecting with Food truck database server...")
@@ -55,10 +57,10 @@ func main() {
         log.Fatal("dialing:", err)
     }    
 
-    go aslibs.New(userdb, rpc.NewClient(conn)).Start(1234)
+    go aslibs.New(userDB, rpc.NewClient(conn)).Start(1234)
     time.Sleep(SleepDuration)
 
-	fmt.Println("Connecting with application server...")
+    fmt.Println("Connecting with application server...")
     conn, err = net.DialTimeout("tcp", "localhost:1234", DialTimeoutDuration)
     if err != nil {
         log.Fatal("dialing:", err)

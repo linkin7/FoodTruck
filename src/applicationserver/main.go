@@ -27,5 +27,5 @@ func main() {
 	}
 
 	// TODO: change the mockuserdb by actual database class.
-	libs.New(mockuserdb.New(1000), client).Start(*port)
+	libs.New(mockuserdb.New(), client).Start(*port)
 }

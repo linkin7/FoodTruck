@@ -14,17 +14,14 @@ type user struct {
 }
 
 type Collections struct {
-	capacity int64
 	users []user
 
 	mu sync.Mutex
 	id int64
 }
 
-func New(cap int64) *Collections {
-	return &Collections{
-		capacity: cap,
-	}
+func New() *Collections {
+	return &Collections{}
 }
 
 func (c *Collections) generateID() int64 {

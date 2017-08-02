@@ -3,7 +3,7 @@ package mockuserdb
 import "testing"
 
 func TestValidateUser(t *testing.T) {
-	db := New(10)
+	db := New()
 	db.AddUser("user1", "pw1", "italian")
 	db.AddUser("user2", "pw2", "swiss")
 

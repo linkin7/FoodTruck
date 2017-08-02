@@ -8,7 +8,7 @@ import (
 )
 
 func TestKNearestNeigbours(t *testing.T) {
-	c := New(10)
+	c := New()
 	c.Insert(&common.Location{1, 5, 5})
 	c.Insert(&common.Location{2, 4, 3})
 	c.Insert(&common.Location{3, 2, 1})
