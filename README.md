@@ -20,7 +20,7 @@ The project focuses on the back-end, more specifically canonical structure of th
 - Go interfaces are comparatively flexible, which helps to impose dependency injection through out the whole codebase.
 - I'm more comfortable with less verbose but Go style concise coding :)
 
-All the client components communicate with server through RPC. I chose this method over REST, SOAP, because previously I mostly worked on RPC method. Also using proper RPC based framework like stubby (gRPC), it's possible to make client implementation less dependent on server implementation. 
+All the client components communicate with server through RPC. I chose this method over REST, SOAP, because previously I mostly worked on RPC method. Also using proper RPC based framework like stubby (gRPC), it's possible to make client implementation less dependable on server implementation. 
 
 ## High Level Component Design
 
