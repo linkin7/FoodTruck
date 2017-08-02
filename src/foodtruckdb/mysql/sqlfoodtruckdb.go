@@ -37,7 +37,7 @@ func (fts *FoodTrucks) UpdateFoodTruck(oID int64, lat float64, lon float64, cl i
         return false
     }
     defer rows.Close()
-    return false
+    return true
 }
 
 func (fts *FoodTrucks) CloseFoodTruck(oID int64) bool {
@@ -48,7 +48,7 @@ func (fts *FoodTrucks) CloseFoodTruck(oID int64) bool {
         return false
     }
     defer rows.Close()
-    return false
+    return true
 }
 
 func (fts *FoodTrucks) FindFoodTruck(oID int64) *common.Location {

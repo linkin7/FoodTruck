@@ -89,7 +89,6 @@ func (us *Users) CuisineType(id int64) string {
         defer rows.Close()
 
         for rows.Next() {
-                // TODO: need to make sure whether its int or int64
                 var cuisine string
                 if err := rows.Scan(&cuisine); err != nil {
                         log.Printf("%v", err)
