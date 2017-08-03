@@ -38,7 +38,7 @@ All the client components communicate with server through RPC. I chose this meth
 
 * **[Food Truck Data Server](https://github.com/linkin7/FoodTruck/tree/master/src/foodtruckdbserver)**: This component processes any request for food truck data. It holds a reference of user data manager, food truck data manager and data container. By design, it should store food truck data of few clusters data in data container and serves the query using data container. It's a read heavy component and processes most of the data, so it needs to be scaled widely. This component can also exploit geo location of datacentre. Because most of the request are served from nearest datacentre, each invidual server will only hold the data of nearest clusters and can store in the in-memory data container. For simplicity current implementation assigns all the food truck data to cluster 0.
 
-## Deploypment
+## Deployment
 After creating a project in GCP, Run `gcloud app deploy` from [mockmain](https://github.com/linkin7/FoodTruck/tree/master/src/mockmain) directory. Currently it creates all the server instance in a single machine in different port. For datastore, create a 2nd gen mysql instance within same project in GCP and create table with [this schema](https://github.com/linkin7/FoodTruck/blob/master/sql.txt). Also change these [environment variables](https://github.com/linkin7/FoodTruck/blob/master/src/mockmain/app.yaml#L4) accordingly.
 
 ## Limitations
