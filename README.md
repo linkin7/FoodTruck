@@ -24,7 +24,7 @@ All the client components communicate with server through RPC. I chose this meth
 
 ## High Level Component Design
 
-* **[Front-End Server](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver)**: This is the topmost component of the application. This component displays information related to user registration , finding nearest food truck etc. It communicates with application server through RPC by which it puts out the results to the browser/client tier. In simple terms, it is a layer which users can access directly (such as a web page, mobile app). During intialization this server registers all the url path with the corresponding handler function through [handler package](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver/handler).
+* **[Front-End Server](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver)**: This is the topmost component of the application. This component displays information related to user registration , finding nearest food truck etc. It communicates with application server through RPC by which it puts out the results to the browser/client tier. In simple terms, it is a layer which users can access directly (such as a web page, mobile app). During intialization this server registers all the url path with the corresponding handler function through [handler package](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver/handler). As internally locations are represented by latitude and longitude, in this component all the location addresses are geocoded using Google map geocoding API.
 
 * **[Application Server](https://github.com/linkin7/FoodTruck/tree/master/src/applicationserver)**: This is the middle layer of the architecture. This component interacts with component related with user data and food truck data, and exposes processed request through RPC interface. Apart from accessing data from internal components, ideally this components doesn't do any processing functionality.
 ![alt text](https://github.com/linkin7/FoodTruck/blob/master/diagram.jpg)
@@ -39,7 +39,15 @@ All the client components communicate with server through RPC. I chose this meth
 * **[Food Truck Data Server](https://github.com/linkin7/FoodTruck/tree/master/src/foodtruckdbserver)**: This component processes any request for food truck data. All the food truck related business logic like personalized query should be added in this component. It holds a reference of user data manager, food truck data manager and data container. By design, it should store food truck data of few clusters data in data container and serves the query using data container. It's a read heavy component and processes most of the data, so it needs to be scaled widely. This component can also exploit geo location of data centre. Because most of the request are served from nearest datacentre, each individual server will only hold the data of nearest clusters and can store in the in-memory data container. For simplicity current implementation assigns all the food truck data to cluster 0.
 
 ## Deployment
-After creating a project in GCP, Run `gcloud app deploy` from [mockmain](https://github.com/linkin7/FoodTruck/tree/master/src/mockmain) directory. Currently it creates all the server instance in a single machine in different port. For datastore, create a 2nd gen mysql instance within same project in GCP and create table with [this schema](https://github.com/linkin7/FoodTruck/blob/master/sql.txt). Also change these [environment variables](https://github.com/linkin7/FoodTruck/blob/master/src/mockmain/app.yaml#L4) accordingly.
+After creating a project in GCP, clone the project and download the following packages in the src directory:
+
+ `go get golang.org/x/net/context`
+
+ `go get googlemaps.github.io/maps`
+ 
+ `go get github.com/go-sql-driver/mysql`
+
+Run `gcloud app deploy` from [mockmain](https://github.com/linkin7/FoodTruck/tree/master/src/mockmain) directory. Currently it creates all the server instance in a single machine in different port. For datastore, create a 2nd gen mysql instance within same project in GCP and create table with [this schema](https://github.com/linkin7/FoodTruck/blob/master/sql.txt). Also change these [environment variables](https://github.com/linkin7/FoodTruck/blob/master/src/mockmain/app.yaml#L4) accordingly.
 
 ## Limitations
 
@@ -49,6 +57,7 @@ After creating a project in GCP, Run `gcloud app deploy` from [mockmain](https:/
 - Not enough fall back in case of any failure during database read/query.
 - Any updates regarding Food Truck will be reflected after [update interval time](https://github.com/linkin7/FoodTruck/blob/master/src/foodtruckdbserver/libs/server.go#L45), because food truck data server fetches fresh data after certain interval and store them in data container for future queries.
 - Distance between two location is measured by crow fly distance. In real world, it should take account of transportation network.
+- Due to approximation of Google map API, location address may not be reflected exactly.
 
 # Links
 
