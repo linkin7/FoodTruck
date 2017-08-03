@@ -32,7 +32,7 @@ func (c *Container) KNearestNeighbour(loc *common.Location, k int) []*common.Loc
 	}
 	used := map[int64]bool{}
 	neighbours := []*common.Location{}
-	for i := 0;i < k;i++ {
+	for i := 0; i < k; i++ {
 		var best_loc *common.Location
 		for _, l := range c.locs {
 			if _, fnd := used[l.ID]; fnd {
@@ -52,7 +52,7 @@ func (c *Container) KNearestNeighbour(loc *common.Location, k int) []*common.Loc
 func (c *Container) Distance(loc1 *common.Location, loc2 *common.Location) float64 {
 	diff_lat := loc1.Lat - loc2.Lat
 	diff_lon := loc1.Lon - loc2.Lon
-	return diff_lat * diff_lat + diff_lon * diff_lon
+	return diff_lat*diff_lat + diff_lon*diff_lon
 }
 
 // TODO: implement it

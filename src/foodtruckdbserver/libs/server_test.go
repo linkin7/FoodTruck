@@ -2,14 +2,14 @@
 package libs
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 	"time"
 
 	"common"
+	"datacontainer/mockdatacontainer"
+	"foodtruckdb/mockfoodtruckdb"
 	"userdb/mockuserdb"
-    "foodtruckdb/mockfoodtruckdb"
-    "datacontainer/mockdatacontainer"
 )
 
 func initServer(t *testing.T) *FTServer {
@@ -21,14 +21,14 @@ func initServer(t *testing.T) *FTServer {
 	// User #3
 	userdb.AddUser("x", "v", "french")
 
-    ftdb := mockfoodtruckdb.New(1000)
-    ftdb.UpdateFoodTruck(1, 2, 3, 0)
-    ftdb.UpdateFoodTruck(2, 4, 3, 0)
-    ftdb.UpdateFoodTruck(3, 6, 4, 0)
+	ftdb := mockfoodtruckdb.New(1000)
+	ftdb.UpdateFoodTruck(1, 2, 3, 0)
+	ftdb.UpdateFoodTruck(2, 4, 3, 0)
+	ftdb.UpdateFoodTruck(3, 6, 4, 0)
 
-    container := mockdatacontainer.New(1000)
+	container := mockdatacontainer.New(1000)
 
-    return New(ftdb, userdb, container, time.Nanosecond)
+	return New(ftdb, userdb, container, time.Nanosecond)
 }
 
 func TestFindNearestFoodTruck(t *testing.T) {
@@ -37,18 +37,18 @@ func TestFindNearestFoodTruck(t *testing.T) {
 
 	srv.CloseFoodTruck(&common.TruckData{
 		UID: 1,
-		}, &b)
+	}, &b)
 	time.Sleep(time.Second)
 
 	// 2 nearest FoodTruclk of location co-ordinate (0, 0)
 	loc = &common.Location{
-		Lat: 0, 
-		Lon: 0, 
+		Lat:     0,
+		Lon:     0,
 		Payload: 2,
 	}
 	got := &[]*common.TruckData{}
 
-    srv.FindNearestFoodTruck(loc, got)
+	srv.FindNearestFoodTruck(loc, got)
 	want := &[]*common.TruckData{
 		{2, 4, 3, "italian"},
 		{3, 6, 4, "french"},
@@ -58,21 +58,21 @@ func TestFindNearestFoodTruck(t *testing.T) {
 	}
 
 	srv.UpdateFoodTruck(&common.TruckData{
-		UID: 1, 
-		Lat: 1, 
+		UID: 1,
+		Lat: 1,
 		Lon: 1,
-		}, &b)
+	}, &b)
 	time.Sleep(time.Second)
 
 	// 2 nearest FoodTruck of location co-ordinate (0, 0)
 	loc = &common.Location{
-		Lat: 0, 
-		Lon: 0, 
+		Lat:     0,
+		Lon:     0,
 		Payload: 2,
 	}
 	got = &[]*common.TruckData{}
 
-    srv.FindNearestFoodTruck(loc, got)
+	srv.FindNearestFoodTruck(loc, got)
 	want = &[]*common.TruckData{
 		{1, 1, 1, "mexican"},
 		{2, 4, 3, "italian"},

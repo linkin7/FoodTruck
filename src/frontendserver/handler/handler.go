@@ -1,13 +1,13 @@
 // Package handler implements all the URL handle processor for the frontend server.
 // Before using this package InitHandlers() function should be called with a client
 // of Application server.
-package handler 
+package handler
 
 import (
 	"fmt"
-	"strconv"
 	"net/http"
 	"net/rpc"
+	"strconv"
 
 	"common"
 	"frontendserver/htmltemplate"
@@ -21,16 +21,16 @@ func InitHandlers(client *rpc.Client) {
 	appSrvClient = client
 
 	http.HandleFunc("/", handler)
-    http.HandleFunc("/index", handler)
-    http.HandleFunc("/register", registerHandler)
-    http.HandleFunc("/postregister", postRegisterHandler)
-    http.HandleFunc("/login", loginHandler)
-    http.HandleFunc("/postlogin", postLoginHandler)
-    http.HandleFunc("/home", homePageHandler)
-    http.HandleFunc("/update", updateHandler)
-    http.HandleFunc("/updateconfirm", updateConfirmHandler)
-    http.HandleFunc("/logout", logoutHandler)
-    http.HandleFunc("/findnearest", findNearestHandler)
+	http.HandleFunc("/index", handler)
+	http.HandleFunc("/register", registerHandler)
+	http.HandleFunc("/postregister", postRegisterHandler)
+	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/postlogin", postLoginHandler)
+	http.HandleFunc("/home", homePageHandler)
+	http.HandleFunc("/update", updateHandler)
+	http.HandleFunc("/updateconfirm", updateConfirmHandler)
+	http.HandleFunc("/logout", logoutHandler)
+	http.HandleFunc("/findnearest", findNearestHandler)
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,8 +50,8 @@ func postRegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ud := &common.UserData{
-		Name: r.FormValue("name"),
-		Pw: r.FormValue("password"),
+		Name:    r.FormValue("name"),
+		Pw:      r.FormValue("password"),
 		Cuisine: r.FormValue("cuisine"),
 	}
 
@@ -67,7 +67,7 @@ func postRegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	makeLoggedIn(r.FormValue("name"), w, r)
-    http.Redirect(w, r, "/home", http.StatusSeeOther)
+	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }
 
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
@@ -79,8 +79,8 @@ func homePageHandler(w http.ResponseWriter, r *http.Request) {
 	p, err := loadPage("home", htmltemplate.Home)
 	if err != nil {
 		fmt.Fprintf(w, "%v", err)
-        return
-    }
+		return
+	}
 	fmt.Fprintf(w, "%v", p.Body)
 }
 
@@ -138,8 +138,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	p, err := loadPage("index", htmltemplate.Index)
 	if err != nil {
 		fmt.Fprintf(w, "%v", err)
-        return
-    }
+		return
+	}
 	fmt.Fprintf(w, "%v", p.Body)
 }
 
@@ -153,7 +153,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%v", p.Body)
 }
 
-
 func postLoginHandler(w http.ResponseWriter, r *http.Request) {
 	if isLoggedIn(r) {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
@@ -162,7 +161,7 @@ func postLoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	ud := &common.UserData{
 		Name: r.FormValue("name"),
-		Pw: r.FormValue("password"),
+		Pw:   r.FormValue("password"),
 	}
 	var reply bool
 	err := appSrvClient.Call("AppServer.Login", ud, &reply)
@@ -176,7 +175,7 @@ func postLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	makeLoggedIn(r.FormValue("name"), w, r)
-    http.Redirect(w, r, "/home", http.StatusSeeOther)
+	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -196,10 +195,10 @@ func findNearestHandler(w http.ResponseWriter, r *http.Request) {
 
 	reply := &[]*common.TruckData{}
 	err := appSrvClient.Call("AppServer.FindNearest", &common.Location{
-		Lat: lat,
-		Lon: lon,
+		Lat:     lat,
+		Lon:     lon,
 		Payload: 3,
-		}, &reply)
+	}, &reply)
 	if err != nil {
 		fmt.Fprintf(w, "Finding Nearest Truck error: %v", err)
 		return

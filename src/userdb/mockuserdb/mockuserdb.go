@@ -7,10 +7,10 @@ package mockuserdb
 import "sync"
 
 type user struct {
-	id int64
-	name string
+	id       int64
+	name     string
 	password string
-	cuisine string
+	cuisine  string
 }
 
 type Collections struct {
@@ -31,7 +31,6 @@ func (c *Collections) generateID() int64 {
 	return c.id
 }
 
-
 func (c *Collections) AddUser(name, pw, cuisine string) int64 {
 	if c.UserID(name) != -1 {
 		return -1
@@ -41,11 +40,11 @@ func (c *Collections) AddUser(name, pw, cuisine string) int64 {
 		cuisine = "None"
 	}
 	c.users = append(c.users, user{
-		id: c.generateID(),
-		name: name,
+		id:       c.generateID(),
+		name:     name,
 		password: pw,
-		cuisine: cuisine,
-		})
+		cuisine:  cuisine,
+	})
 	return 1
 }
 

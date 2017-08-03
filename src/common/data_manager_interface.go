@@ -27,14 +27,14 @@ type UserDbManager interface {
 type DataContainer interface {
 	Insert(loc *Location)
 	Remove(loc *Location)
-	KNearestNeighbour(loc *Location, k int) []*Location 
+	KNearestNeighbour(loc *Location, k int) []*Location
 
-	// Distance should implement a distance function of two locations based on 
+	// Distance should implement a distance function of two locations based on
 	// usecase
 	Distance(loc1 *Location, loc2 *Location) float64
 
-	// Serialize serializes the whole structure in wire format, so that it can be 
-	// store in any database. 
+	// Serialize serializes the whole structure in wire format, so that it can be
+	// store in any database.
 	Serialize() string
 
 	// Deserialize builds the whole structure from the given serialized data.

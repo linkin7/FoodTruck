@@ -1,8 +1,8 @@
 package mockdatacontainer
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 
 	"common"
 )

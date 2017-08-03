@@ -1,20 +1,20 @@
 package handler
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"common"
 )
 
 type Page struct {
-    Title string
-    Body  string
+	Title string
+	Body  string
 }
 
-func loadPage(title, body string, ) (*Page, error) {
-    return &Page{Title: title, Body: string(body)}, nil
+func loadPage(title, body string) (*Page, error) {
+	return &Page{Title: title, Body: string(body)}, nil
 }
 
 func isLoggedIn(r *http.Request) bool {
@@ -25,8 +25,8 @@ func currentUserName(r *http.Request) string {
 	cookie, err := r.Cookie("session")
 	if err != nil || len(cookie.Value) == 0 {
 		return ""
- 	}
- 	return cookie.Value
+	}
+	return cookie.Value
 }
 
 func currentUserID(r *http.Request) (int64, error) {

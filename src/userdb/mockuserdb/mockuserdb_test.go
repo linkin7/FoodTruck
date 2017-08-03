@@ -9,9 +9,9 @@ func TestValidateUser(t *testing.T) {
 
 	var tests = []struct {
 		name string
-		pw string
+		pw   string
 		want bool
-	} {
+	}{
 		{"user2", "pw2", true},
 		{"user1", "pw2", false},
 		{"user4", "pw2", false},

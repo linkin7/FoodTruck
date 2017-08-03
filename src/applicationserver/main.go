@@ -1,10 +1,10 @@
 // Package applicationserver/main starts an application server.
 
-package main 
+package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 	"log"
 	"net/rpc"
 
@@ -14,14 +14,14 @@ import (
 
 var (
 	dbServerAddress = flag.String("database_server_address", "localhost:7777", "Network address and port of database server")
-	port = flag.Int("port", 1234, "Port number to start server")
+	port            = flag.Int("port", 1234, "Port number to start server")
 )
 
 func main() {
 	fmt.Println("Application server initializing ...")
 
 	fmt.Println("Application server connecting with database server...")
-    client, err := rpc.DialHTTP("tcp", *dbServerAddress)
+	client, err := rpc.DialHTTP("tcp", *dbServerAddress)
 	if err != nil {
 		log.Fatal("Dialing database server:", err)
 	}
