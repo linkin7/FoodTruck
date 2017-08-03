@@ -57,7 +57,7 @@ Run `gcloud app deploy` from [mockmain](https://github.com/linkin7/FoodTruck/tre
 - Not enough fall back in case of any failure during database read/query.
 - Any updates regarding Food Truck will be reflected after [update interval time](https://github.com/linkin7/FoodTruck/blob/master/src/foodtruckdbserver/libs/server.go#L45), because food truck data server fetches fresh data after certain interval and store them in data container for future queries.
 - Distance between two location is measured by crow fly distance. In real world, it should take account of transportation network.
-- Due to approximation of Google map API, location address may not be reflected exactly.
+- Due to approximation error of Google map API, location address may not be reflected exactly.
 
 # Links
 
