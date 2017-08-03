@@ -3,8 +3,6 @@ A simple location based service that provides a user information about nearest a
 
 [Service link](https://foodtruckapplication-175305.appspot.com)
 
-Feel free to clone the code. Github currently breaks some of the code indentation.
-
 ## Functional Requirement
 
 - Logged out user can find nearest food truck, given users current geo location.
