@@ -5,10 +5,9 @@ var Index = `
 <a href="/login">Log In</a>
 
 <br/>
-<b>Enter your current location</b>
+<b>Enter your current address to find nearest Food Truck service</b>
 <form action="/findnearest" method="POST">
-	Latitude: <input type="text" name="latitude"><br/>
-	Longitude: <input type="text" name="longitude"><br/>
+	Address: <input type="text" name="address"><br/>
   	<input type="submit" name="find"><br/><br/>
 </form>
 `

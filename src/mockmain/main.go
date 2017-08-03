@@ -19,6 +19,9 @@ import (
 	"frontendserver/handler"
 	udb "userdb/mysql"
 
+	"golang.org/x/net/context"
+	"googlemaps.github.io/maps"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -38,12 +41,14 @@ func mustGetenv(k string) string {
 func main() {
 	fmt.Println("Frontend server initializing ...")
 
+	ctx := context.Background()
+
 	connectionName := mustGetenv("CLOUDSQL_CONNECTION_NAME")
 	dbuser := mustGetenv("CLOUDSQL_USER")
 	password := mustGetenv("CLOUDSQL_PASSWORD")
+	mapAPIKey := mustGetenv("MAP_API_KEY")
 	dbInstanceAddress := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/datastore", dbuser, password, connectionName)
 
-	//userdb := mysql.New(fmt.Sprintf("%s:%s@cloudsql(%s)/", dbuser, password, connectionName))
 	userDB := udb.New(dbInstanceAddress)
 	ftDB := ftdb.New(dbInstanceAddress)
 	container := mockdatacontainer.New()
@@ -66,7 +71,12 @@ func main() {
 		log.Fatal("dialing:", err)
 	}
 
-	handler.InitHandlers(rpc.NewClient(conn))
+	mapCl, err := maps.NewClient(maps.WithAPIKey(mapAPIKey))
+	if err != nil {
+		log.Fatal("fatal error: ", err)
+	}
+
+	handler.InitHandlers(ctx, rpc.NewClient(conn), mapCl)
 
 	fmt.Println("Frontend server successfully started ...")
 	http.ListenAndServe(":8080", nil)

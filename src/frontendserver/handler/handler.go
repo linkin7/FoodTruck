@@ -7,18 +7,29 @@ import (
 	"fmt"
 	"net/http"
 	"net/rpc"
-	"strconv"
 
 	"common"
 	"frontendserver/htmltemplate"
+
+	"golang.org/x/net/context"
+	"googlemaps.github.io/maps"
 )
 
-// appSrvClient holds the TCP connection with Appllication server.
-var appSrvClient *rpc.Client
+var (
+	ctx context.Context
+
+	// appSrvClient holds the TCP connection with Appllication server.
+	appSrvClient *rpc.Client
+
+	// mapClient holds client connection with Google map API server.
+	mapClient *maps.Client
+)
 
 // InitHandles registers all the handler function with corresponding url path.
-func InitHandlers(client *rpc.Client) {
-	appSrvClient = client
+func InitHandlers(c context.Context, asCl *rpc.Client, mapCl *maps.Client) {
+	ctx = c
+	appSrvClient = asCl
+	mapClient = mapCl
 
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/index", handler)
@@ -90,17 +101,20 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	method := ""
-	// TODO: check error after parsing float.
-	lat, _ := strconv.ParseFloat(r.FormValue("latitude"), 64)
-	lon, _ := strconv.ParseFloat(r.FormValue("longitude"), 64)
+	lat, lon, err := findLatLon(r.FormValue("address"))
+	if err != nil {
+		fmt.Fprintln(w, err)
+		return
+	}
+
 	uID, err := currentUserID(r)
 	if err != nil {
 		fmt.Fprintf(w, "FoodTruck update error: %v", err)
 		return
 	}
-	td := &common.TruckData{uID, lat, lon, ""}
 
+	td := &common.TruckData{uID, lat, lon, ""}
+	method := ""
 	if len(r.FormValue("start")) > 0 {
 		method = "AppServer.UpdateFoodTruck"
 	} else {
@@ -189,12 +203,14 @@ func findNearestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: check error after parsing float.
-	lat, _ := strconv.ParseFloat(r.FormValue("latitude"), 64)
-	lon, _ := strconv.ParseFloat(r.FormValue("longitude"), 64)
+	lat, lon, err := findLatLon(r.FormValue("address"))
+	if err != nil {
+		fmt.Fprintln(w, err)
+		return
+	}
 
 	reply := &[]*common.TruckData{}
-	err := appSrvClient.Call("AppServer.FindNearest", &common.Location{
+	err = appSrvClient.Call("AppServer.FindNearest", &common.Location{
 		Lat:     lat,
 		Lon:     lon,
 		Payload: 3,
@@ -209,9 +225,13 @@ func findNearestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintln(w, "<table border='1'><tr><th>Cuisine Type</th><th>Latitude</th><th>Longitude</th></tr>")
+	fmt.Fprintln(w, "<table border='1'><tr><th>Cuisine Type</th><th>Address</th></tr>")
 	for _, td := range *reply {
-		fmt.Fprintf(w, "<tr><td>%v</td><td>%v</td><td>%v</td></tr>", td.Cuisine, td.Lat, td.Lon)
+		adr, err := findAddress(td.Lat, td.Lon)
+		if err != nil {
+			fmt.Printf("%v\n", err)
+		}
+		fmt.Fprintf(w, "<tr><td>%v</td><td>%v</td></tr>", td.Cuisine, adr)
 	}
 	fmt.Fprintln(w, "</table>")
 }

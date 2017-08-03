@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"common"
+	"googlemaps.github.io/maps"
 )
 
 type Page struct {
@@ -58,4 +59,39 @@ func makeLoggedOut(w http.ResponseWriter, r *http.Request) {
 		Name:  "session",
 		Value: "",
 	})
+}
+
+// Map related API
+
+func findLatLon(adr string) (float64, float64, error) {
+	if len(adr) == 0 {
+		return 0, 0, nil
+	}
+	r := &maps.GeocodingRequest{
+		Address: adr,
+	}
+	res, err := mapClient.Geocode(ctx, r)
+	if err != nil {
+		return 0, 0, err
+	}
+	if len(res) != 1 {
+		return 0, 0, fmt.Errorf("Address is not correct!")
+	}
+
+	return res[0].Geometry.Location.Lat, res[0].Geometry.Location.Lng, nil
+}
+
+func findAddress(lat, lon float64) (string, error) {
+	r := &maps.GeocodingRequest{
+		LatLng: &maps.LatLng{lat, lon},
+	}
+	res, err := mapClient.ReverseGeocode(ctx, r)
+	if err != nil {
+		return "Unknown address", err
+	}
+	if len(res) == 0 {
+		return "Unknown address", fmt.Errorf("Unknown address")
+	}
+
+	return res[0].FormattedAddress, nil
 }

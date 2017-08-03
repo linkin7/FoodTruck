@@ -5,6 +5,7 @@ env_variables:
   CLOUDSQL_CONNECTION_NAME: 'foodtruckapplication-175305:europe-west1:database'
   CLOUDSQL_USER: root
   CLOUDSQL_PASSWORD: '10891089'
+  MAP_API_KEY: 'AIzaSyDZymgaZni09lCVqoeGtL7c87cGlMkWw-s'
   
 beta_settings:
     cloud_sql_instances: 'foodtruckapplication-175305:europe-west1:database'
