@@ -43,7 +43,7 @@ After creating a project in GCP, Run `gcloud app deploy` from [mockmain](https:/
 
 ## Limitations
 
-- Very basic user interface. Please feel free to use back button for navigation.
+- Very basic user interface. Please feel free to use back button for navigation. Ideally all the location data should be pulled from app GPS.
 - No input validation.
 - Basic RPC communcation. There's not any encryption during server/client communication.
 - Not enough fall back in case of any failure during database read/query.
