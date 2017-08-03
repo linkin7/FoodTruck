@@ -5,8 +5,8 @@ A simple location based service that provides a user information about nearest a
 
 ## Functional Requirement
 
-- Logged out user can find nearest food truck, given user's current geo location.
-- Logged in user can start a food truck service by submitting current location.
+- Logged out user can find nearest food truck, given user's current address.
+- Logged in user can start a food truck servicing by submitting food truck address.
 - Logged in users can't try nearest food truck feature. For that they need to log out. (limitation)
 - A registered user can start only one food truck service.
 
