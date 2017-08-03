@@ -50,3 +50,6 @@ After creating a project in GCP, Run `gcloud app deploy` from [mockmain](https:/
 - Any updates regarding Food Truck will be reflected after [update interval time](https://github.com/linkin7/FoodTruck/blob/master/src/foodtruckdbserver/libs/server.go#L45), because food truck data server fetches fresh data after certain interval and store them in data container for future queries.
 - Distance between two location is measured by crow fly distance. In real world, it should take account of transportation network.
 
+# Links
+
+[My Resume](https://github.com/linkin7/Resume/blob/master/Resume.pdf)
