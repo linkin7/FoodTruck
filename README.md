@@ -5,7 +5,8 @@ A simple location based service that provides a user information about nearest a
 
 ## Functional Requirement
 
-- Logged out user can find nearest food truck, given user's current address.
+- Logged out user can find nearest food truck, given user's current address (for example, Rotachstrasse 33, 8003 Zurich, Switzerland).
+- Should return closest three available food trucks, irrespective of distance from user's current location.
 - Logged in user can start a food truck servicing by submitting food truck address.
 - Logged in users can't try nearest food truck feature. For that they need to log out. (limitation)
 - A registered user can start only one food truck service.
