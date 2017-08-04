@@ -1,9 +1,9 @@
-gcloud sql connect <instance_name> --user=root
+// gcloud sql connect <instance_name> --user=root
 
 // Schema for user data
 CREATE TABLE users (
 	id INT NOT NULL AUTO_INCREMENT,
-	name VARCHAR(30) NOT NULL,
+	name VARCHAR(30) NOT NULL UNIQUE,
 	password VARCHAR(30) NOT NULL,
 	cuisine VARCHAR(30),
 	PRIMARY KEY (id)
@@ -20,7 +20,7 @@ INSERT INTO users (name, password, cuisine) VALUES ('donkey', 'donk', 'italian')
 
 // Schema for food truck data
 CREATE TABLE foodtrucks (
-	oID INT NOT NULL,
+	oID INT NOT NULL UNIQUE,
 	latitude DOUBLE NOT NULL,
 	longitude double NOT NULL,
 	cluster INT DEFAULT 0
