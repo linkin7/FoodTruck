@@ -23,6 +23,8 @@ The project focuses on the back-end, more specifically canonical structure of th
 
 All the client components communicate with server through RPC. I chose this method over REST, SOAP, because previously I mostly worked on RPC method. Also using proper RPC based framework like stubby (gRPC), it's possible to make client implementation less dependable on server implementation. 
 
+Most of the technical stack used for this project is new to me. I learned through working in this project.
+
 ## High Level Component Design
 
 * **[Front-End Server](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver)**: This is the topmost component of the application. This component displays information related to user registration , finding nearest food truck etc. It communicates with application server through RPC by which it puts out the results to the browser/client tier. In simple terms, it is a layer which users can access directly (such as a web page, mobile app). During intialization this server registers all the url path with the corresponding handler function through [handler package](https://github.com/linkin7/FoodTruck/tree/master/src/frontendserver/handler). As internally locations are represented by latitude and longitude, in this component all the location addresses are geocoded using Google map geocoding API.
