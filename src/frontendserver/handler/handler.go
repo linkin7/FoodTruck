@@ -213,10 +213,11 @@ func findNearestHandler(w http.ResponseWriter, r *http.Request) {
 	err = appSrvClient.Call("AppServer.FindNearest", &common.Location{
 		Lat:     lat,
 		Lon:     lon,
-		Payload: 3,
+		Payload: 10,
 	}, &reply)
 	if err != nil {
-		fmt.Fprintf(w, "Finding Nearest Truck error: %v", err)
+		log.Println("Finding Nearest Truck error: ", err)
+		fmt.Fprintln(w, "Can't find nearest Truck")
 		return
 	}
 

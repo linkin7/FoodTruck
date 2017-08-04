@@ -26,6 +26,9 @@ import (
 )
 
 var (
+	asPort              = 1234
+	dsPort              = 7777
+	fsPort              = 8080
 	SleepDuration       = time.Minute
 	DialTimeoutDuration = 10 * time.Minute
 )
@@ -39,7 +42,7 @@ func mustGetenv(k string) string {
 }
 
 func main() {
-	fmt.Println("Frontend server initializing ...")
+	log.Println("Frontend server initializing ...")
 
 	ctx := context.Background()
 
@@ -53,19 +56,21 @@ func main() {
 	ftDB := ftdb.New(dbInstanceAddress)
 	container := mockdatacontainer.New()
 
-	go dslibs.New(ftDB, userDB, container, time.Second).Start(7777)
+	// Starting Food Trcuk data server.
+	go dslibs.New(ftDB, userDB, container, time.Second).Start(dsPort)
 	time.Sleep(SleepDuration)
 
-	fmt.Println("Connecting with Food truck database server...")
+	log.Println("Connecting with Food truck database server...")
 	conn, err := net.DialTimeout("tcp", "localhost:7777", DialTimeoutDuration)
 	if err != nil {
 		log.Fatal("dialing:", err)
 	}
 
-	go aslibs.New(userDB, rpc.NewClient(conn)).Start(1234)
+	// Starting application server
+	go aslibs.New(userDB, rpc.NewClient(conn)).Start(asPort)
 	time.Sleep(SleepDuration)
 
-	fmt.Println("Connecting with application server...")
+	log.Println("Connecting with application server...")
 	conn, err = net.DialTimeout("tcp", "localhost:1234", DialTimeoutDuration)
 	if err != nil {
 		log.Fatal("dialing:", err)
@@ -78,6 +83,6 @@ func main() {
 
 	handler.InitHandlers(ctx, rpc.NewClient(conn), mapCl)
 
-	fmt.Println("Frontend server successfully started ...")
+	log.Println("Frontend server successfully started ...")
 	http.ListenAndServe(":8080", nil)
 }
