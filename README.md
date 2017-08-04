@@ -42,7 +42,7 @@ Most of the technical stack used for this project is new to me. I learned throug
 * **[Food Truck Data Server](https://github.com/linkin7/FoodTruck/tree/master/src/foodtruckdbserver)**: This component processes any request for food truck data. All the food truck related business logic like personalized query should be added in this component. It holds a reference of user data manager, food truck data manager and data container. By design, it should store food truck data of few clusters data in data container and serves the query using data container. It's a read heavy component and processes most of the data, so it needs to be scaled widely. This component can also exploit geo location of data centre. Because most of the request are served from nearest datacentre, each individual server will only hold the data of nearest clusters and can store in the in-memory data container. For simplicity current implementation assigns all the food truck data to cluster 0.
 
 ## Deployment
-After creating a project in GCP, clone the project and download the following packages in the src directory:
+After creating a project in GCP, clone the github project and download the following packages in the src directory:
 
  `go get golang.org/x/net/context`
 
